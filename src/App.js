@@ -30,7 +30,7 @@ class App extends Component {
     // Create buttons to access setState
   
   handleDeleteCard = (cardId) => {
-    console.log('inside handleDeleteCard', cardId)
+    
     const { lists, allCards} = this.state.store;
 
     const newLists = lists.map(lists => ({
@@ -49,13 +49,30 @@ class App extends Component {
 
   };
 
-  // handleAddCard = (listId) => {
-  //   const newCard = newRandomCard()
+  handleAddCard = (listId) => {
+    const newCard = newRandomCard()
 
-  //   const newLists = this.state.lists.map(list)
+    const newLists = this.state.store.lists.map(list => {
+      if(list.id === listId) {
+        return {
+          ...list,
+          cardIds: [...list.cardIds, newCard.id]
+        };
+      }
+      return list;
+    })
 
+    this.setState({
+      store: {
+        lists: newLists,
+        allCards: {
+          ...this.state.store.allCards, 
+          [newCard.id]: newCard
+        }
+      }
+    })
 
-  // }
+  }
 
 
   
@@ -72,6 +89,7 @@ class App extends Component {
           {store.lists.map(list => (
             <List
               key={list.id}
+              id={list.id}
               header={list.header}
               cards={list.cardIds.map(id => store.allCards[id])}
               onClickDelete = {this.handleDeleteCard}
